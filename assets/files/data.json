@@ -1,0 +1,20 @@
+{
+  "prosucts": [
+    {
+      "name": "Politics",
+      "icon": "assets/images/politics.png"
+    },
+    {
+      "name": "Sports",
+      "icon": "assets/images/sports.png"
+    },
+    {
+      "name": "Movies",
+      "icon": "assets/images/movies.png"
+    },
+    {
+      "name": "Crime",
+      "icon": "assets/images/crime.png"
+    }
+  ]
+}
