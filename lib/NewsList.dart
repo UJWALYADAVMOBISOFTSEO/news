@@ -42,7 +42,9 @@ class _NewsListState extends State<NewsList> {
                     backgroundColor: Colors.white,
                     elevation: 0.0,
                     bottom: TabBar(
-                      indicatorWeight: 0.1,
+                      indicator: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          color: Colors.red),
                       padding: EdgeInsets.only(bottom: 10),
                       tabs: [
                         Tab(
@@ -50,7 +52,7 @@ class _NewsListState extends State<NewsList> {
                                 child: Column(
                                   children: [
                                     Image.asset("assets/images/politics.png").h4(context),
-                                    "abc".text.color(Colors.black).make().h2(context)
+                                    "Politics".text.color(Colors.black).make().h2(context)
                                   ],
                                 )
                             )
@@ -59,7 +61,7 @@ class _NewsListState extends State<NewsList> {
                             child: Column(
                               children: [
                                 Image.asset("assets/images/sports.png").h4(context),
-                                "abc".text.color(Colors.black).make().h2(context)
+                                "Sports".text.color(Colors.black).make().h2(context)
                               ],
                             )
                         ),
@@ -67,7 +69,7 @@ class _NewsListState extends State<NewsList> {
                             child: Column(
                               children: [
                                 Image.asset("assets/images/movies.png").h4(context),
-                                "abc".text.color(Colors.black).make().h2(context)
+                                "Movies".text.color(Colors.black).make().h2(context)
                               ],
                             )
                         ),
@@ -75,7 +77,7 @@ class _NewsListState extends State<NewsList> {
                             child: Column(
                               children: [
                                 Image.asset("assets/images/crime.png").h4(context),
-                                "abc".text.color(Colors.black).make().h2(context)
+                                "Crime".text.color(Colors.black).make().h2(context)
                               ],
                             )
                         ),
@@ -95,22 +97,13 @@ class _NewsListState extends State<NewsList> {
 
                       // second tab bar viiew widget
                       Container(
-                        color: Colors.yellow,
-                        child: Center(
-                          child: Image.asset("assets/images/sports.png"),
-                        ),
+                        child: Expanded(child: ListDataSports()),
                       ),
                       Container(
-                        color: Colors.yellow,
-                        child: Center(
-                          child: Image.asset("assets/images/movies.png"),
-                        ),
+                        child: Expanded(child: ListDataMovies()),
                       ),
                       Container(
-                        color: Colors.yellow,
-                        child: Center(
-                          child: Image.asset("assets/images/crime.png"),
-                        ),
+                        child: Expanded(child: ListDataCrime()),
                       ),
                     ],
                   ),
@@ -154,54 +147,6 @@ class Content extends StatelessWidget {
   }
 }
 
-class Horizontal_list extends StatefulWidget {
-  const Horizontal_list({Key? key}) : super(key: key);
-
-  @override
-  State<Horizontal_list> createState() => _Horizontal_listState();
-}
-
-class _Horizontal_listState extends State<Horizontal_list> {
-
-  @override
-  void initState() {
-    loadData();
-    super.initState();
-  }
-
-  loadData() async {
-    await Future.delayed(Duration(seconds: 2));
-    var JSON = await rootBundle.loadString("assets/files/data.json");
-    print(JSON);
-    var decodedData = jsonDecode(JSON);
-    print(decodedData);
-    var productData = decodedData["prosucts"];
-    print(productData);
-    Category.categories =
-        List.from(productData).map<Item>((item) => Item.fromMap(item)).toList();
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 85,
-      child: Expanded(
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-          ),
-          itemBuilder: (context, index) {
-            return ProductWidget(item: Category.categories[index]);
-          },
-          itemCount: Category.categories.length,
-        ),
-      ),
-    );
-  }
-}
-
-
 
 class ListData extends StatefulWidget {
   const ListData({Key? key}) : super(key: key);
@@ -233,6 +178,97 @@ class _ListDataState extends State<ListData> {
     );
   }
 }
+
+class ListDataSports extends StatefulWidget {
+  const ListDataSports({Key? key}) : super(key: key);
+
+  @override
+  State<ListDataSports> createState() => _ListDataSportsState();
+}
+
+class _ListDataSportsState extends State<ListDataSports> {
+  ApiServiceSports clientSports = ApiServiceSports();
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: clientSports.getArticle(),
+      builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
+        if (snapshot.hasData) {
+          List<Article>? articles = snapshot.data;
+          return ListView.builder(
+            itemCount: articles!.length,
+            itemBuilder: (context, index) => customListTile(articles[index], context),
+          );
+        }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+}
+
+class ListDataMovies extends StatefulWidget {
+  const ListDataMovies({Key? key}) : super(key: key);
+
+  @override
+  State<ListDataMovies> createState() => _ListDataMoviesState();
+}
+
+class _ListDataMoviesState extends State<ListDataMovies> {
+  ApiServiceMovies clientMovies = ApiServiceMovies();
+  @override
+  Widget build(BuildContext context) {
+
+    return FutureBuilder(
+      future: clientMovies.getArticle(),
+      builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
+        if (snapshot.hasData) {
+          List<Article>? articles = snapshot.data;
+          return ListView.builder(
+            itemCount: articles!.length,
+            itemBuilder: (context, index) => customListTile(articles[index], context),
+          );
+        }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+}
+
+class ListDataCrime extends StatefulWidget {
+  const ListDataCrime({Key? key}) : super(key: key);
+
+  @override
+  State<ListDataCrime> createState() => _ListDataCrimeState();
+}
+
+class _ListDataCrimeState extends State<ListDataCrime> {
+  ApiServiceCrime clientCrime = ApiServiceCrime();
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: clientCrime.getArticle(),
+      builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
+        if (snapshot.hasData) {
+          List<Article>? articles = snapshot.data;
+          return ListView.builder(
+            itemCount: articles!.length,
+            itemBuilder: (context, index) => customListTile(articles[index], context),
+          );
+        }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+}
+
+
+
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -302,14 +338,10 @@ class _SearchBarState extends State<SearchBar> {
 class CustomSearchDelegate extends SearchDelegate {
 // Demo list to show querying
   List<String> searchTerms = [
-    "Apple",
-    "Banana",
-    "Mango",
-    "Pear",
-    "Watmermelons",
-    "Blueberries",
-    "Pineapples",
-    "Strawberries"
+    "Politics",
+    "Sports",
+    "Movies",
+    "Crime",
   ];
 
 // first overwrite to
@@ -375,6 +407,53 @@ class CustomSearchDelegate extends SearchDelegate {
           title: Text(result),
         );
       },
+    );
+  }
+}
+
+class Horizontal_list extends StatefulWidget {
+  const Horizontal_list({Key? key}) : super(key: key);
+
+  @override
+  State<Horizontal_list> createState() => _Horizontal_listState();
+}
+
+class _Horizontal_listState extends State<Horizontal_list> {
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  loadData() async {
+    await Future.delayed(Duration(seconds: 2));
+    var JSON = await rootBundle.loadString("assets/files/data.json");
+    print(JSON);
+    var decodedData = jsonDecode(JSON);
+    print(decodedData);
+    var productData = decodedData["prosucts"];
+    print(productData);
+    Category.categories =
+        List.from(productData).map<Item>((item) => Item.fromMap(item)).toList();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 85,
+      child: Expanded(
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+          ),
+          itemBuilder: (context, index) {
+            return ProductWidget(item: Category.categories[index]);
+          },
+          itemCount: Category.categories.length,
+        ),
+      ),
     );
   }
 }

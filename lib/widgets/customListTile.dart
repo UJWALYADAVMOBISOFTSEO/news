@@ -3,8 +3,21 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../Model/ArticleModel.dart';
 import '../NewsDetail.dart';
+import 'package:intl/intl.dart';
+
 
 Widget customListTile(Article article, BuildContext context) {
+  // var date = article.publishedAt.text.make();
+  // var dates;
+  // var time;
+  // if(date != null){
+  //   DateTime parseDate = DateFormat("yyyy-MM-dd").parse(dates);
+  //   var inputDate = DateTime.parse(parseDate.toString());
+  //   var outputFormat = DateFormat('MM/dd/yyyy');
+  //   var timeFormat = DateFormat('hh:mm a');
+  //   dates = outputFormat.format(inputDate);
+  //   time = timeFormat.format(inputDate);
+  // }
   return InkWell(
     onTap: () {
       Navigator.push(
