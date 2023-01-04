@@ -21,23 +21,106 @@ class _NewsListState extends State<NewsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: "CNBC".text.color(Colors.black).make(),
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.black),
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          title: "CNBC".text.color(Colors.black).make(),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+                Data(),
+                Content(),
+                SearchBar(),
+                SizedBox(
+                  height: 70,
+                  child: AppBar(
+                    backgroundColor: Colors.white,
+                    elevation: 0.0,
+                    bottom: TabBar(
+                      indicatorWeight: 0.1,
+                      padding: EdgeInsets.only(bottom: 10),
+                      tabs: [
+                        Tab(
+                            child: Container(
+                                child: Column(
+                                  children: [
+                                    Image.asset("assets/images/politics.png").h4(context),
+                                    "abc".text.color(Colors.black).make().h2(context)
+                                  ],
+                                )
+                            )
+                        ),
+                        Tab(
+                            child: Column(
+                              children: [
+                                Image.asset("assets/images/sports.png").h4(context),
+                                "abc".text.color(Colors.black).make().h2(context)
+                              ],
+                            )
+                        ),
+                        Tab(
+                            child: Column(
+                              children: [
+                                Image.asset("assets/images/movies.png").h4(context),
+                                "abc".text.color(Colors.black).make().h2(context)
+                              ],
+                            )
+                        ),
+                        Tab(
+                            child: Column(
+                              children: [
+                                Image.asset("assets/images/crime.png").h4(context),
+                                "abc".text.color(Colors.black).make().h2(context)
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // create widgets for each tab bar here
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      // first tab bar view widget
+                      Container(
+                        child: Expanded(child: ListData()),
+                      ),
+
+                      // second tab bar viiew widget
+                      Container(
+                        color: Colors.yellow,
+                        child: Center(
+                          child: Image.asset("assets/images/sports.png"),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.yellow,
+                        child: Center(
+                          child: Image.asset("assets/images/movies.png"),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.yellow,
+                        child: Center(
+                          child: Image.asset("assets/images/crime.png"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Horizontal_list(),
+                // Expanded(child: ListData()),
+          ],
+        ),
+        endDrawer: Drawer(),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-              Data(),
-              Content(),
-              Horizontal_list(),
-              Expanded(child: ListData()),
-        ],
-      ),
-      endDrawer: Drawer(),
     );
   }
 }
@@ -150,4 +233,151 @@ class _ListDataState extends State<ListData> {
     );
   }
 }
+
+class SearchBar extends StatefulWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
+  @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  @override
+  Widget build(BuildContext context) {
+    return  Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: TextField(
+                    cursorColor: Colors.grey,
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                            color: Colors.grey,
+                            // fontSize: 18
+                        ),
+                        prefixIcon: Container(
+                          padding: EdgeInsets.all(15),
+                          child: Icon(Icons.search),
+                          width: 18,
+                        )
+                    ),
+                  ),
+                ),
+                Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      // borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Icon(Icons.search).onTap(() {
+                      // method to show the search bar
+                      showSearch(
+                          context: context,
+                          // delegate to customize the search bar
+                          delegate: CustomSearchDelegate()
+                      );
+                    }),
+                    width: 35
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+// Demo list to show querying
+  List<String> searchTerms = [
+    "Apple",
+    "Banana",
+    "Mango",
+    "Pear",
+    "Watmermelons",
+    "Blueberries",
+    "Pineapples",
+    "Strawberries"
+  ];
+
+// first overwrite to
+// clear the search text
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+// second overwrite to pop out of search menu
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+// third overwrite to show query result
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var fruit in searchTerms) {
+      if (fruit.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(fruit);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      },
+    );
+  }
+
+// last overwrite to show the
+// querying process at the runtime
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var fruit in searchTerms) {
+      if (fruit.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(fruit);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      },
+    );
+  }
+}
+
+
 

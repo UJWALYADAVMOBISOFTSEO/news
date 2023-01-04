@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
+import 'package:news/widgets/test.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'NewsList.dart';

@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../Model/ArticleModel.dart';
 import '../NewsDetail.dart';
@@ -15,6 +15,7 @@ Widget customListTile(Article article, BuildContext context) {
                   )));
     },
     child: Container(
+      height: 150,
       margin: EdgeInsets.all(12.0),
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -30,42 +31,43 @@ Widget customListTile(Article article, BuildContext context) {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 200.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              //let's add the height
+          Row(
+            children: [
+              Container(
+                width: 100,
+                height: 130,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    //let's add the height
 
-              image: DecorationImage(
-                  image: NetworkImage(article.urlToImage), fit: BoxFit.cover),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Container(
-            padding: EdgeInsets.all(6.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            child: Text(
-              article.source.name,
-              style: TextStyle(
-                color: Colors.white,
+                    image: DecorationImage(
+                        image: NetworkImage(article.urlToImage),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
               ),
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Text(
-            article.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-            ),
+              Container(
+                width: 220,
+                height: 130,
+                child: Container(
+                  child: ListTile(
+                    title: Container(
+                      height: 120,
+                      child: Container(
+                        child: article.title.text.xl2.bold.make(),
+                      ),
+                    ),
+                    subtitle: Container(
+                        height: 30,
+                        child: Container(
+                          child: article.publishedAt.text.make(),
+                        )),
+                  ),
+                ),
+              )
+            ],
           )
         ],
       ),
